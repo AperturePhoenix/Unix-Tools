@@ -1,17 +1,22 @@
 #!/bin/bash
-echo ${1} >> path
-echo ${1}
-if [ "${1}" == "Philosophy" ]; then
-	lines=$(cat path | wc -l)
-	lines=$(expr ${lines} - 1)
-	echo "${lines} links"
-	mv path ./output/
-	exit 0
-fi
-
+TITLE=$1
 mkdir -p output
-wget -nc https://${2-en}.wikipedia.org/wiki/${1} -P ./output &> output/log
+cd output
+rm path
 
-filename=$(cat ./output/${1} | ./first_link)
-sleep 1
-./wikipedia ${filename} ${2}
+while [ $TITLE != "Philosophy" ]
+do
+    echo $TITLE
+    echo $TITLE >> path
+    LINK=`cat path | egrep -o "^$TITLE$" | wc -l`
+    wget -nc https://${2-en}.wikipedia.org/wiki/$TITLE &>> log
+    FILENAME=`cat $TITLE | tr -d '\r\n' | sed 's/<p>/\n&/g' | sed 's/([^)]*href[^)]*)//g' | sed 's/<li>.*<\/li>//g' | tail -n +2 > temp`
+    LINE=`cat temp | egrep -n '<b>' | head -n 1 | egrep -o '^[0-9]*'`
+    FILENAME=`cat temp | tail -n +$LINE | egrep -o 'href="[^"]*"' | egrep -v '[#:]' | tail -n +$LINK | head -n 1 | sed 's/.*\/.*\/\(.*\)"/\1/'`
+    TITLE=$FILENAME
+    sleep 1
+done
+
+echo 'Philosophy'
+LINKS=`cat path | wc -l`
+echo "$LINKS clicks away from Philosophy"
