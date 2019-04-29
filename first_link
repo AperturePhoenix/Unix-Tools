@@ -1,7 +1,0 @@
-#!/bin/bash
-#tr -d '\r\n' | sed 's/<p>/\n&/g' | tail -n +2 | egrep -o 'href="[^"]*"' | egrep -v 'File' | head -n 1 |  sed 's/.*\/.*\/\(.*\)"/\1/'
-#tr -d '\r\n' | sed 's/<p>/\n&/g' | tail -n +2 | sed 's/\([^\)]*href="[^"]*"[^\)]*\)//' | egrep -o 'href="/wiki/[^"]*"' | egrep -v 'File' | head -n 1 |  sed 's/.*\/.*\/\(.*\)"/\1/'
-#tr -d '\r\n' | sed 's/<p>/\n&/g' | tail -n +2 | egrep -o 'href="/wiki/[^"]*"' | egrep -v 'File:' | head -n 1 |  sed 's/.*\/.*\/\(.*\)"/\1/'
-tr -d '\r\n' | sed 's/<p>/\n&/g' | sed 's/([^)]*href[^)]*)//g' | sed 's/<li>.*<\/li>//g' | tail -n +2 > output/temp
-line=$(cat output/temp | egrep -n '<b>' | head -n 1 | egrep -o '^[0-9]*')
-cat output/temp | tail -n +${line} | egrep -o 'href="/wiki/[^"]*"' | egrep -v ':' | head -n 1 |  sed 's/.*\/.*\/\(.*\)"/\1/'
