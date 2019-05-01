@@ -17,7 +17,10 @@ do
     #Get the link for the next article
     FILENAME=`cat $TITLE | tr -d '\r\n' | sed 's/<p>/\n&/g' | sed 's/([^)]*href[^)]*)//g' | sed 's/<li>.*<\/li>//g' | sed 's/<small>.*<\/small>//g' | tail -n +2 > temp`
     LINE=`cat temp | egrep -n '<b>' | head -n 1 | egrep -o '^[0-9]*'`
-    FILENAME=`cat temp | tail -n +$LINE | egrep -o 'href="[^"]*"' | egrep -v '[#:]' | tail -n +$LINK | head -n 1 | sed 's/.*\/.*\/\(.*\)"/\1/'`
+    if [[ $? != 0 ]]; then
+        LINE=1
+    fi
+    FILENAME=`cat temp | tail -n +$LINE | egrep -o 'href="[^"]*"' | egrep -v '[#:&]' | tail -n +$LINK | head -n 1 | sed 's/.*\/.*\/\(.*\)"/\1/'`
     TITLE=$FILENAME
     sleep 1
 done
