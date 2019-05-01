@@ -1,0 +1,4 @@
+#!/bin/bash
+./wikipedia Baseball
+./wikipedia American_Revolutionary_War
+./wikipedia Michael_Clarke_\(Australian_politician\)
